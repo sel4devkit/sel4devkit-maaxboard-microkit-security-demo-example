@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Copyright 2021, Breakaway Consulting Pty. Ltd.
+
+ SPDX-License-Identifier: BSD-2-Clause
+-->
+<system>
+     <!-- Memory regions for uboot drivers and device tree -->
+    <memory_region name="heap_mem" size="0x2000000"/>
+    <memory_region name="heap_mem_1" size="0x2000000"/>
+    <memory_region name="heap_end" size="0x1000"/>
+    <memory_region name="heap_end_1" size="0x1000"/>
+    <memory_region name="dma_pool_1" size="0x100000"/>
+    <memory_region name="dma_pool_2" size="0x100000"/>
+    <memory_region name="timer_reg_mem" size="0x20000" phys_addr="0x306a0000"/>
+    <memory_region name="clock-controller_mem" size="0x10000" phys_addr="0x30380000"/>
+    <memory_region name="iomuxc_mem" size="0x10000" phys_addr="0x30330000"/>
+    <memory_region name="syscon_mem" size="0x10000" phys_addr="0x30360000"/>
+    <memory_region name="usb_2_mem" size="0x10000" phys_addr="0x38200000"/>
+    <memory_region name="usb_2_phy_mem" size="0x1000" phys_addr="0x382f0000"/>
+    <memory_region name="mmc_mem" size="0x10000" phys_addr="0x30b40000"/>
+    <memory_region name="timer_mem" size="0x20000" phys_addr="0x306c0000"/>
+
+    <memory_region name="data_buffer" size="0x10000"/>
+    <memory_region name="circular_buffer" size="0x10000"/>
+
+    <protection_domain name="keyreader" priority="24">
+        <program_image path="keyreader.elf" />
+
+        <map mr="timer_reg_mem" vaddr="0x306a0000" perms="rw" cached="false"/>
+        <map mr="clock-controller_mem" vaddr="0x30380000" perms="rw" cached="false"/>
+        <map mr="syscon_mem" vaddr="0x30360000" perms="rw" cached="false" />
+        <map mr="usb_2_mem" vaddr="0x38200000" perms="rw" cached="false"/>
+        <map mr="usb_2_phy_mem" vaddr="0x382f0000" perms="rw" cached="false"/>
+        <map mr="timer_mem" vaddr="0x306c0000" perms="rw" cached="false"/>
+        <map mr="heap_mem" vaddr="0x50000000" perms="rw" cached="true" setvar_vaddr="__heap_start"/>
+        <map mr="heap_end" vaddr="0x52000000" perms="rw" cached="false" setvar_vaddr="__heap_end"/>
+        <map mr="dma_pool_1" vaddr="0x54000000" perms="rw" cached="true" setvar_vaddr="dma_base"/>
+
+        <setvar symbol="dma_cp_paddr" region_paddr="dma_pool_1" />
+
+    </protection_domain>
+
+    <protection_domain name="transmitter" priority="25" budget="200" period="300" pp="true">
+        <program_image path="transmitter.elf" />
+
+        <map mr="timer_reg_mem" vaddr="0x306a0000" perms="rw" cached="false"/>
+        <map mr="clock-controller_mem" vaddr="0x30380000" perms="rw" cached="false"/>
+        <map mr="iomuxc_mem" vaddr="0x30330000" perms="rw" cached="false" />
+        <map mr="syscon_mem" vaddr="0x30360000" perms="rw" cached="false" />
+        <map mr="mmc_mem" vaddr="0x30b40000" perms="rw" cached="false"/>
+        <map mr="timer_mem" vaddr="0x306c0000" perms="rw" cached="false"/>
+        <map mr="heap_mem_1" vaddr="0x50000000" perms="rw" cached="true" setvar_vaddr="__heap_start"/>
+        <map mr="heap_end_1" vaddr="0x52000000" perms="rw" cached="false" setvar_vaddr="__heap_end"/>
+        <map mr="dma_pool_2" vaddr="0x56000000" perms="rw" cached="true" setvar_vaddr="dma_base"/>
+
+        <setvar symbol="dma_cp_paddr" region_paddr="dma_pool_2" />
+
+        <map mr="data_buffer" vaddr="0x6_000_000" perms="rw" setvar_vaddr="data_buffer" />
+        <map mr="circular_buffer" vaddr="0x6_010_000" perms="rw" setvar_vaddr="circular_buffer" />
+
+    </protection_domain> 
+
+    <protection_domain name="crypto" priority="23" pp="true">
+        <program_image path="crypto.elf" />
+
+        <map mr="data_buffer" vaddr="0x6_011_000" perms="rw" setvar_vaddr="data_buffer" />
+        <map mr="circular_buffer" vaddr="0x6_010_000" perms="rw" setvar_vaddr="circular_buffer" />
+
+    </protection_domain>
+
+    <channel>
+        <end pd="keyreader" id="5" />
+        <end pd="crypto" id="5" />
+    </channel>
+
+    <channel>
+        <end pd="crypto" id="6" />
+        <end pd="transmitter" id="6" />
+    </channel>
+
+    <channel>
+        <end pd="transmitter" id="7" />
+        <end pd="keyreader" id="7" />
+    </channel>
+
+</system>
