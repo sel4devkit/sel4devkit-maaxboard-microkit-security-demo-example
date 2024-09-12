@@ -53,6 +53,11 @@ void write_buffer(uintptr_t memory_region, char encrypted_char)
 
     circular_buffer_put(circular_buffer, data_buffer, data_size, encrypted_char);
 
+    printf("Encrypted character: %c\n", encrypted_char);
+
+    // Send encrypted character over network
+    microkit_ppcall(40, seL4_MessageInfo_new((uint64_t) encrypted_char,1,0,0));
+
     microkit_notify(6);
 }
 
