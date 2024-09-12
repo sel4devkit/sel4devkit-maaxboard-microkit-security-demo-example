@@ -202,21 +202,6 @@
         <map mr="cyclecounters" vaddr="0x5_010_000" perms="rw" cached="true" setvar_vaddr="cyclecounters_vaddr" />
     </protection_domain>
 
-    <protection_domain name="client1" priority="95" budget="20000">
-        <program_image path="lwip.elf" />
-
-        <map mr="net_rx_free_cli1" vaddr="0x2_000_000" perms="rw" cached="true" setvar_vaddr="rx_free" />
-        <map mr="net_rx_active_cli1" vaddr="0x2_200_000" perms="rw" cached="true" setvar_vaddr="rx_active" />
-        <map mr="net_tx_free_cli1" vaddr="0x2_400_000" perms="rw" cached="true" setvar_vaddr="tx_free" />
-        <map mr="net_tx_active_cli1" vaddr="0x2_600_000" perms="rw" cached="true" setvar_vaddr="tx_active" />
-
-        <map mr="net_rx_buffer_data_region_cli1" vaddr="0x2_800_000" perms="rw" cached="true" setvar_vaddr="rx_buffer_data_region" />
-        <map mr="net_tx_buffer_data_region_cli1" vaddr="0x2_a00_000" perms="rw" cached="true" setvar_vaddr="tx_buffer_data_region" />
-
-        <map mr="serial_tx_queue_client1" vaddr="0x4_000_000" perms="rw" cached="true" setvar_vaddr="serial_tx_queue" />
-        <map mr="serial_tx_data_client1" vaddr="0x4_001_000" perms="rw" cached="true" setvar_vaddr="serial_tx_data" />
-    </protection_domain>
-
     <protection_domain name="timer" priority="101" pp="true" passive="true">
         <program_image path="timer_driver.elf" />
         <map mr="timer" vaddr="0x2_000_000" perms="rw" cached="false" setvar_vaddr="gpt_regs" />
@@ -266,11 +251,6 @@
     </channel>
 
     <channel>
-        <end pd="copy1" id="1" />
-        <end pd="client1" id="2" />
-    </channel>
-
-    <channel>
         <end pd="net_virt_tx" id="0" />
         <end pd="eth" id="1" />
     </channel>
@@ -281,18 +261,8 @@
     </channel>
 
     <channel>
-        <end pd="net_virt_tx" id="2" />
-        <end pd="client1" id="3" />
-    </channel>
-
-    <channel>
         <end pd="timer" id="1" />
         <end pd="client0" id="1" />
-    </channel>
-
-    <channel>
-        <end pd="timer" id="2" />
-        <end pd="client1" id="1" />
     </channel>
 
     <channel>
