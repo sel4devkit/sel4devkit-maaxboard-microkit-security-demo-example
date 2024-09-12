@@ -24,7 +24,7 @@
     <memory_region name="data_buffer" size="0x10000"/>
     <memory_region name="circular_buffer" size="0x10000"/>
 
-    <memory_region name="uart" size="0x10_000" phys_addr="0x30860000" />
+    <!-- Memory regions for sddf -->
     <memory_region name="eth0" size="0x10_000" phys_addr="0x30be0000" />
     <memory_region name="timer" size="0x10_000" phys_addr="0x302d0000" />
 
@@ -67,15 +67,10 @@
     <!-- shared memory for serial data regions -->
     <memory_region name="serial_tx_data_driver" size="0x4_000" />
     <memory_region name="serial_tx_data_client0" size="0x2_000" />
-    <memory_region name="serial_tx_data_client1" size="0x2_000" />
-    <memory_region name="serial_tx_data_client2" size="0x2_000" />
 
     <!-- shared memory for serial queue regions -->
     <memory_region name="serial_tx_queue_driver" size="0x1_000" />
     <memory_region name="serial_tx_queue_client0" size="0x1_000" />
-    <memory_region name="serial_tx_queue_client1" size="0x1_000" />
-    <memory_region name="serial_tx_queue_client2" size="0x1_000" />
-
 
     <protection_domain name="keyreader" priority="24" stack_size="0x20000">
         <program_image path="keyreader.elf" />
